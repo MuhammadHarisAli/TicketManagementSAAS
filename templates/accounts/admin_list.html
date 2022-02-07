@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Creat User{% endblock %}
+
+{% block content %}
+    <!--    if super admin load super admin content-->
+    <!-- else -->
+
+    {% include 'topbar.html' %}
+    <div class="row">
+        <span class="col-3">
+        {% include 'sidebar.html' %}
+        </span>
+        <span class="col-8">
+            <a class="btn btn-primary" href="{% url 'createuser' %}" role="button">Add Admin</a>
+            <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">id</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Mobile</th>
+                  <th scope="col">Address</th>
+                  <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                {% for data in  admin_list%}
+                    <tbody>
+                        <tr>
+                          <th>{{ data.id }}</th>
+                          <td >{{ data.username }}</td>
+                          <td>{{ data.email }}</td>
+                          <td>{{ data.mobile_number }}</td>
+                          <td>{{ data.address }}</td>
+                        </tr>
+                    </tbody>
+                {% endfor %}
+            </table>
+
+
+        </span>
+    </div>
+{% endblock %}

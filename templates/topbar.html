@@ -1,0 +1,16 @@
+{% load static %}
+{% block header_block %}
+<div>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <span class="col-8">
+      <img class="mb-4" src="{% static 'img/logo.png'%}" alt="" width="72" height="72">
+      <button style="margin-left:2%;" type="button" id="sidebarCollapse" class="btn btn-info">
+          <i class="fa fa-bars"></i>
+      </button>
+    </span>
+    <span class="col-4">
+    <a class="nav-link" href="{% url 'logout' %}" style="float:right">Signout</a>
+    </span>
+  </nav>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <title>{% block title %}{% endblock %}</title>
+        <link href="{% static 'css/bootstrap.css'%}" rel="stylesheet">
+        <!-- Custom styles for this template -->
+        <link href="{% static 'css/signin.css'%}" rel="stylesheet">
+        {% block resources_block %}
+        {% endblock %}
+    </head>
+    <body class="text-center">
+        {% block content %}
+        {% endblock %}
+        {% block footer_block %}
+        {% endblock %}
+        {% block js_block %}
+        {% endblock %}
+
+    </body>
+</html>
+
+
+
+

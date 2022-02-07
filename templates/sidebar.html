@@ -1,0 +1,114 @@
+<div class="wrapper">
+    <!-- Sidebar -->
+    <nav id="sidebar">
+
+
+        <ul class="components">
+            <p></p>
+                <li>
+                    <a href="#">Dashboard</a>
+                </li>
+            {% if request.user.user_type == 1 %}
+                <li>
+                    <a href="{% url 'adminlist' %}">Admin</a>
+                </li>
+                <li>
+                    <a href="#" >Report</a>
+                </li>
+            {% endif %}
+            {% if request.user.user_type == 2 %}
+                <li>
+                    <a href="#ticketSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Ticket</a>
+                    <ul class="collapse list-unstyled" id="ticketSubmenu">
+                        <li>
+                            <a href="#">All Tickets</a>
+                        </li>
+                        <li>
+                            <a href="#">Open Tickets</a>
+                        </li>
+                        <li>
+                            <a href="#">In Progress Tickets</a>
+                        </li>
+                        <li>
+                            <a href="#">Accelated Tickets</a>
+                        </li>
+                        <li>
+                            <a href="#">Closed Tickets</a>
+                        </li>
+                        <li>
+                            <a href="#">Cancelled Tickets</a>
+                        </li>
+                    </ul>
+                </li>
+            {% endif %}
+            {% if request.user.user_type == 2 or request.user.user_type == 3 %}
+                <li>
+                    <a href="#assetSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" >Assets</a>
+                    <ul class="collapse list-unstyled" id="assetSubmenu">
+                        <li>
+                            <a href="#" >All Assets</a>
+                        </li>
+                        <li>
+                            <a href="#" >Assets Report</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#contractSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" >Contracts</a>
+                    <ul class="collapse list-unstyled" id="contractSubmenu">
+                        <li>
+                            <a href="#" >All Contracts</a>
+                        </li>
+                        <li>
+                            <a href="#" >Contract Report</a>
+                        </li>
+                        <li>
+                            <a href="#" >Contract Expiry Report</a>
+                        </li>
+                    </ul>
+                </li>
+            {% endif %}
+            {% if request.user.user_type == 2 %}
+                <li>
+                    <a href="#managementSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" >User Management</a>
+                    <ul class="collapse list-unstyled" id="managementSubmenu">
+                        <li>
+                            <a href="#" >Department</a>
+                        </li>
+                        <li>
+                            <a href="#" >Group</a>
+                        </li>
+                        <li>
+                            <a href="#" >Staff</a>
+                        </li>
+                        <li>
+                            <a href="#" >Requester</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#settingSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" >Settings</a>
+                    <ul class="collapse list-unstyled" id="settingSubmenu">
+                        <li>
+                            <a href="#" >Source</a>
+                        </li>
+                        <li>
+                            <a href="#" >Asset Type</a>
+                        </li>
+                        <li>
+                            <a href="#" >Manufacturer</a>
+                        </li>
+                        <li>
+                            <a href="#" >Vendor</a>
+                        </li>
+                        <li>
+                            <a href="#" >Location</a>
+                        </li>
+                    </ul>
+                </li>
+            {% endif %}
+        </ul>
+
+    </nav>
+    <!-- Page Content -->
+</div>

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Creat User{% endblock %}
+
+{% block content %}
+    <!--    if super admin load super admin content-->
+    <!-- else -->
+
+    {% include 'topbar.html' %}
+    <div class="row">
+        <span class="col-4">
+        {% include 'sidebar.html' %}
+        </span>
+        <span class="col-8">
+            <form class="form-inline" id="contact-us" method="post">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-6 first second">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" value="{{profile_form.name.value}}" required>
+                        </div>
+                    </div>
+                    <div class="col-6 first second">
+                        <div class="form-floating ">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Your Email" value="{{profile_form.email.value}}" required>
+                        </div>
+                    </div>
+                    <div class="col-6 first second">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="address" name="address" placeholder="address" value="{{profile_form.address.value}}" required>
+                        </div>
+                    </div>
+                    <div class="col-6 first second">
+                        <div class="form-floating">
+                            <input type="tel" class="form-control" placeholder="Phone number" name="phone-number" id="phone-number" value="{{profile_form.telephone_number.value}}" required>
+                        </div>
+                    </div>
+                    <div class="col-6 first second">
+                        <div class="form-floating">
+                            <input type="tel" class="form-control" placeholder="Password" name="password" id="password" value="{{profile_form.password.value}}" required>
+                        </div>
+                    </div>
+                    <div class="col-6 first second">
+                        <div class="form-group">
+                            <input type="file" class="form-control" name="customFile" id="customFile" value="{{profile_form.image.value}}" />
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top:5%;" class="col-4">
+                    <button class="btn btn-primary w-100 py-3" type="submit">Add</button>
+                </div>
+            </form>
+        </span>
+    </div>
+{% endblock %}
