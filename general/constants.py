@@ -5,3 +5,12 @@ USER_TYPES = (
     (2, _('Admin')),
     (3, _('User')),
 )
+
+STATE_TYPES = (
+    (-1, _('Deleted')),
+    (0, _('Paused')),
+    (1, _('Active')),
+    (2, _('For Review')),
+    (3, _('Expired')),
+    (4, _('Cancelled')),
+)
