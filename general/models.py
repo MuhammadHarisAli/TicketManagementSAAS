@@ -56,12 +56,6 @@ class ResourceSubType(Base):
         verbose_name=_('Resource Sub Type Name'),
         max_length=255,
     )
-    profile = models.ForeignKey(
-        'accounts.Profile',
-        null=True,
-        blank=True,
-        on_delete=models.DO_NOTHING,
-    )
 
 
 class Resource(Base):

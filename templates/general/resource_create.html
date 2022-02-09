@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Creat User{% endblock %}
+
+{% load tags %}
+
+{% block content %}
+    <!--    if super admin load super admin content-->
+    <!-- else -->
+
+    {% include 'topbar.html' %}
+    <div class="row">
+        <span class="col-4">
+        {% include 'sidebar.html' %}
+        </span>
+        <span class="col-8">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group col-8" style="padding-left: 0px;">
+                    <label for="resource_name">Resource Name</label>
+                    <input type="text" class="form-control" id="resource_name" name="resource_name" placeholder="" value="{{resource_form.resource_name.value}}" required>
+                </div>
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                      <th scope="col">id</th>
+                      <th scope="col">Sub Resource Name</th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                    </thead>
+                    {% for data in sub_resource %}
+                        <tbody>
+                            <tr>
+                              <th>{{ data.id }}</th>
+                              <td >{{ data.resource_sub_type_name }}</td>
+                                <td>
+                                    <a href="{% url 'sub_resource_delete' data.id %}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    {% endfor %}
+                </table>
+
+                <a class="add btn btn-primary " style="color:white; margin-bottom:2%;">Add Sub Resources</a>
+
+                <div id="new_chq"></div>
+                <input type="hidden" id="total_chq" value="1" placeholder="sub_resource_name">
+                <br>
+                <a class="remove btn btn-secondary" style="color:white; margin-bottom:2%;">Remove Last Sub Resource</a>
+                <br>
+                <button style="color:white; margin-top:2%;" type="submit" class="btn btn-primary ">Submit</button>
+            </form>
+        </span>
+    </div>
+{% endblock %}
+
+{% block js_block %}
+<script>
+$('.add').on('click', add);
+$('.remove').on('click', remove);
+
+function add() {
+  var new_chq_no = parseInt($('#total_chq').val()) + 1;
+  var new_input = "<input type='text' id='new_" + new_chq_no + "' style='margin-top:2%; margin-left:2%;' name='new_sub_resource_name' required>";
+
+
+  $('#new_chq').append(new_input);
+
+  $('#total_chq').val(new_chq_no);
+}
+
+function remove() {
+  var last_chq_no = $('#total_chq').val();
+
+  if (last_chq_no > 1) {
+    $('#new_' + last_chq_no).remove();
+    $('#total_chq').val(last_chq_no - 1);
+  }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Property{% endblock %}
+
+{% block content %}
+    <!--    if super admin load super admin content-->
+    <!-- else -->
+
+    {% include 'topbar.html' %}
+    <div class="row">
+        <span class="col-3">
+        {% include 'sidebar.html' %}
+        </span>
+        <span class="col-8">
+            <a class="btn btn-primary" href="{% url 'property_create' %}" role="button">Add Property</a>
+            <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">id</th>
+                  <th scope="col">Property Name</th>
+                  <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                {% for data in  property_list%}
+                    <tbody>
+                        <tr>
+                          <th>{{ data.id }}</th>
+                          <td >{{ data.location }}</td>
+                            <td>
+                                <a href="{% url 'property_update' data.id %}">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                                &nbsp
+                                <a href="{% url 'property_delete' data.id %}">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                {% endfor %}
+            </table>
+
+
+        </span>
+    </div>
+{% endblock %}
+
+
+{% block js_content %}
+    <script>
+        function quote_on(id) {
+            document.getElementById('id_distance').value = "on";
+        }
+    </script>
+{% endblock %}

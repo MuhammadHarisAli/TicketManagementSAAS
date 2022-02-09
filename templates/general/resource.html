@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Department{% endblock %}
+
+{% block content %}
+    <!--    if super admin load super admin content-->
+    <!-- else -->
+
+    {% include 'topbar.html' %}
+    <div class="row">
+        <span class="col-3">
+        {% include 'sidebar.html' %}
+        </span>
+        <span class="col-8">
+            <a class="btn btn-primary" href="{% url 'resource_create' %}" role="button">Add Resource</a>
+            <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">id</th>
+                  <th scope="col">Resource Name</th>
+                  <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                {% for data in  resource_list%}
+                    <tbody>
+                        <tr>
+                          <th>{{ data.id }}</th>
+                          <td >{{ data.resource_name }}</td>
+                            <td>
+                                <a href="{% url 'resource_update' data.id %}">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                                &nbsp
+                                <a href="{% url 'resource_delete' data.id %}">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                {% endfor %}
+            </table>
+
+
+        </span>
+    </div>
+{% endblock %}
+
+
+{% block js_content %}
+{% endblock %}

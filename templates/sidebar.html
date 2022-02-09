@@ -73,7 +73,10 @@
                     <a href="#managementSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" >User Management</a>
                     <ul class="collapse list-unstyled" id="managementSubmenu">
                         <li>
-                            <a href="#" >Department</a>
+                            <a href="{% url 'department' %}" >Department</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'resource' %}" >Resource</a>
                         </li>
                         <li>
                             <a href="#" >Group</a>
@@ -102,7 +105,7 @@
                             <a href="#" >Vendor</a>
                         </li>
                         <li>
-                            <a href="#" >Location</a>
+                            <a href="{% url 'property' %}" >Location</a>
                         </li>
                     </ul>
                 </li>
