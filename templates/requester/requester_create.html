@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}User Access{% endblock %}
+
+{% load tags %}
+
+{% block content %}
+    <!--    if super admin load super admin content-->
+    <!-- else -->
+
+    {% include 'topbar.html' %}
+    <div class="row">
+        <span class="col-4">
+        {% include 'sidebar.html' %}
+        </span>
+        <span class="col-8">
+            <form method="post">
+                {% csrf_token %}
+                <h3>User Info</h3>
+                <div class="row">
+                    <div class="col-3 form-group">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="First Name" value="{{requester_form.first_name.value}}" required>
+                        </div>
+                    </div>
+                    <div class="col-3 form-group">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="last_name" value="{{requester_form.last_name.value}}" required>
+                        </div>
+                    </div>
+                    <div class="col-3 form-group">
+                        <div class="form-floating ">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Your Email" value="{{requester_form.email.value}}" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3 form-group">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="job_title" name="job_title" placeholder="Job Title" value="{{requester_form.job_title.value}}" required>
+                        </div>
+                    </div>
+                    <div class="form-group col-3">
+                        <select name="department" class="custom-select mr-sm-2">
+                            {% for department in deepartment_list %}
+                                <option value="{{ department.id }}" {% if requester_form.selected_department.value|to_str == department.id|to_str %} selected {% endif %}>
+                                    {{department.name}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3 form-group">
+                        <label>Temporary User </label>
+                        <div class="radio">
+                          <label><input class="temporary_user_yes" type="radio" id="temporary_user_yes" name="temporary_user" value="0" {% if requester_form.temporary_user.value == 'true' %} checked {% endif %}>&nbsp;Yes</label>
+                            &nbsp;
+                          <label><input class="temporary_user_no" type="radio" id="temporary_user_no" name="temporary_user" value="1" {% if requester_form.temporary_user.value == 'false' %} checked {% endif %}>&nbsp;No</label>
+                        </div>
+                    </div>
+                    <div class="col-3 form-group class_expiry_date">
+                        <div class="form-floating">
+                            <label for="expiry_date">Expiry Date</label>
+                            <input type="date" id="expiry_date" class="form-control" name="expiry_date" value="{{deactivation_date|date:'Y-m-d'}}">
+                        </div>
+                    </div>
+                </div>
+                {% for property in property_list %}
+                    <h5 style="margin-top:2%;">Property</h5>
+                    <div class="row">
+                        <div class="col-3 form-group property">
+                            <input name="property" type="checkbox" value="{{property.id}}" {% if property.id in selected_property %} checked {% endif %}>&nbsp; {{property.location}}
+                        </div>
+                    </div>
+                {% endfor %}
+                <h3>Resources</h3>
+                {% for resource in resource_list %}
+                    <h5 style="margin-top:2%;">{{resource.resource_name}}</h5>
+                    <div class="row">
+                            {% for sub_resource in resource.resource_sub_type.all %}
+                                <div class="col-3 form-group sub_resource">
+                                    <input name="resource" type="checkbox" value="{{sub_resource.id}}" {% if sub_resource.id in selected_resource_sub_type %} checked {% endif %}>&nbsp; {{sub_resource.resource_sub_type_name}}
+                                </div>
+                            {% endfor %}
+                    </div>
+                {% endfor %}
+                <h3>Additional Comment</h3>
+                <div class="form-group col-8">
+                    <textarea name="additional_comment" class="form-control" id="exampleFormControlTextarea1" rows="3">{{requester_form.additional_comment.value}}
+                    </textarea>
+                </div>
+                <div style="margin-top:5%;" class="col-4">
+                    <button class="btn btn-primary w-100 py-3" type="submit">Add</button>
+                </div>
+            </form>
+        </span>
+    </div>
+{% endblock %}
+
+{% block js_block %}
+<script>
+$('.temporary_user_yes').on('click', temporary_user_yes);
+$('.temporary_user_no').on('click', temporary_user_no);
+
+function temporary_user_yes() {
+    $(".class_expiry_date").show();
+}
+
+function temporary_user_no() {
+    $(".class_expiry_date").hide();
+
+}
+
+</script>
+{% endblock %}

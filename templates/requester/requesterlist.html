@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}User Access Request Form{% endblock %}
+
+{% block content %}
+    <!--    if super admin load super admin content-->
+    <!-- else -->
+
+    {% include 'topbar.html' %}
+    <div class="row">
+        <span class="col-3">
+        {% include 'sidebar.html' %}
+        </span>
+        <span class="col-8">
+            <a class="btn btn-primary" href="{% url 'requester_create' %}" role="button">Add User Access Request</a>
+            <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">Employee id</th>
+                  <th scope="col">First Name</th>
+                  <th scope="col">Last Name</th>
+                  <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                {% for data in  requester_list %}
+                    <tbody>
+                        <tr>
+                          <th>{{ data.id }}</th>
+                          <td >{{ data.user.first_name }}</td>
+                            <td >{{ data.user.last_name }}</td>
+                            <td>
+                                <a href="{% url 'requester_update' data.id %}">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                                &nbsp
+                                <a href="{% url 'requester_delete' data.id %}">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                {% endfor %}
+            </table>
+
+
+        </span>
+    </div>
+{% endblock %}
+
+
+{% block js_content %}
+{% endblock %}
