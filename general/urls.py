@@ -19,4 +19,9 @@ urlpatterns = [
     path('resource/update/<int:id>/', views.resourceupdate, name='resource_update'),
     path('resource/delete/(?P<id>\d+)/', views.resourceDelete, name='resource_delete'),
     path('sub_resource/delete/<int:sub_resource_id>/', views.subresourceDelete, name='sub_resource_delete'),
+
+    path('requester/', views.requester, name='requester'),
+    path('requester/create/', views.requesterCreate, name='requester_create'),
+    path('requester/update/<int:id>/', views.requesterupdate, name='requester_update'),
+    path('requester/delete/(?P<id>\d+)/', views.requesterDelete, name='requester_delete'),
 ]

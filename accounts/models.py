@@ -55,9 +55,8 @@ class Profile(AbstractUser):
         blank=True,
         on_delete=models.DO_NOTHING,
     )
-    property = models.ForeignKey(
+    property = models.ManyToManyField(
         'general.Property',
         null=True,
         blank=True,
-        on_delete=models.DO_NOTHING,
     )

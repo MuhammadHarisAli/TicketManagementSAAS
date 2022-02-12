@@ -4,6 +4,7 @@ USER_TYPES = (
     (1, _('Super Admin')),
     (2, _('Admin')),
     (3, _('User')),
+    (4, _('Requester')),
 )
 
 STATE_TYPES = (

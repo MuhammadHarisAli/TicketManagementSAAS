@@ -68,3 +68,31 @@ class Resource(Base):
         null=True,
         blank=True,
     )
+
+
+class Requester(Base):
+    user = models.ForeignKey(
+        'accounts.profile',
+        on_delete=models.CASCADE,
+        related_name="%(app_label)s_%(class)s_created_by",
+    )
+    temporary_user = models.BooleanField(
+        verbose_name=_('Temporary User'),
+        default=True
+    )
+    deactivation_date = models.DateTimeField(
+        verbose_name=_('Creation date'),
+        editable=True,
+        null=True,
+        blank=True
+    )
+    additional_comment = models.CharField(
+        max_length=1000,
+        null=True,
+        blank=True
+    )
+    resource_sub_type = models.ManyToManyField(
+        ResourceSubType,
+        null=True,
+        blank=True,
+    )

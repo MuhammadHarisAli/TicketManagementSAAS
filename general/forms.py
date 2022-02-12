@@ -28,3 +28,35 @@ class ResourceForm(forms.Form):
         max_length=255,
         required=True
     )
+
+
+class RequesterForm(forms.Form):
+    first_name = forms.CharField(
+        label='First Name',
+        max_length=255,
+        required=True
+    )
+    last_name = forms.CharField(
+        label='Last Name',
+        max_length=255,
+        required=True
+    )
+    email = forms.EmailField(
+        label='Eemail',
+        max_length=255,
+        required=True
+    )
+    job_title = forms.CharField(
+        label='Job Title',
+        max_length=255,
+        required=True
+    )
+    temporary_user = forms.BooleanField(
+        label='Temporary User',
+        required=True
+    )
+    additional_comment = forms.CharField(
+        label='Additional Comment',
+        max_length=255,
+        required=False
+    )

@@ -1,4 +1,5 @@
-from django.shortcuts import render
+import datetime
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.views.generic import TemplateView
@@ -6,8 +7,8 @@ from django.http import Http404, HttpResponse
 from django.template import loader
 
 from accounts.models import Profile
-from general.forms import PropertyForm, DepartmentForm, ResourceForm
-from general.models import Property, Department, Resource, ResourceSubType
+from general.forms import PropertyForm, DepartmentForm, ResourceForm, RequesterForm
+from general.models import Property, Department, Resource, ResourceSubType, Requester
 
 
 class PropertyView(TemplateView):
@@ -266,3 +267,147 @@ def subresourceDelete(request, *args, **kwargs):
                         )
                     )
 
+@login_required(login_url='login')
+def requester(request, *args, **kwargs):
+    template = loader.get_template('requester/requesterlist.html')
+    context = {
+        'success': True,
+        'requester_list': Requester.objects.filter(state=1, created_by_id=request.user.id),
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login')
+def requesterCreate(request, *args, **kwargs):
+    template = loader.get_template('requester/requester_create.html')
+    data = {}
+    requester_form = RequesterForm(
+        initial={
+            'first_name': '',
+            'last_name': '',
+            'email': '',
+            'job_title': '',
+            'temporary_user': False,
+            'additional_comment':''
+        }
+    )
+    if request.method == 'POST':
+        data['first_name'] = request.POST.get('first_name')
+        data['last_name'] = request.POST.get('last_name')
+        data['email'] = request.POST.get('email')
+        data['job_title'] = request.POST.get('job_title')
+        data['temporary_user'] = request.POST.get('temporary_user')
+        data['additional_comment'] = request.POST.get('additional_comment')
+        requester_form = RequesterForm(data)
+
+        if requester_form.is_valid():
+
+            request_user = Profile.objects.create(
+                email=data['email'],
+                first_name=data['first_name'],
+                last_name=data['last_name'],
+                username=data['first_name'] + str(datetime.datetime.now()),
+                department_id=request.POST.get('department'),
+                job_title=data['job_title'],
+                user_type=4
+            )
+            for requester_property_id in request.POST.getlist('property'):
+                request_user.property.add(requester_property_id)
+
+            requester_obj = Requester.objects.create(
+                temporary_user= True if data['temporary_user'] == '0' else False,
+                additional_comment=data['additional_comment'],
+                created_by_id=request.user.id,
+                modified_by_id=request.user.id,
+                user_id=request_user.id,
+            )
+            if requester_obj.temporary_user:
+                requester_obj.deactivation_date = request.POST.get('expiry_date')
+                requester_obj.save()
+            for requester_sub_resource_id in request.POST.getlist('resource'):
+                requester_obj.resource_sub_type.add(requester_sub_resource_id)
+
+            return redirect("requester")
+
+    context = {
+        'success': True,
+        'property_form': requester_form,
+        'deepartment_list': Department.objects.filter(state=1, created_by_id=request.user.id),
+        'resource_list': Resource.objects.filter(state=1, created_by_id=request.user.id),
+        'property_list': Property.objects.filter(state=1, created_by_id=request.user.id)
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login')
+def requesterupdate(request, *args, **kwargs):
+    template = loader.get_template('requester/requester_create.html')
+    update_id = kwargs.get('id')
+    requester_obj = Requester.objects.filter(id=update_id)[0]
+    data = {}
+
+    if request.method == 'POST':
+        data['first_name'] = request.POST.get('first_name')
+        data['last_name'] = request.POST.get('last_name')
+        data['email'] = request.POST.get('email')
+        data['job_title'] = request.POST.get('job_title')
+        data['temporary_user'] = request.POST.get('temporary_user')
+        data['additional_comment'] = request.POST.get('additional_comment')
+        requester_form = RequesterForm(data)
+
+        if requester_form.is_valid():
+
+            requester_obj.user.email=data['email']
+            requester_obj.user.first_name=data['first_name']
+            requester_obj.user.last_name=data['last_name']
+            requester_obj.user.username=data['first_name'] + str(datetime.datetime.now())
+            requester_obj.user.department_id=request.POST.get('department')
+            requester_obj.user.job_title=data['job_title']
+
+            requester_obj.user.property.clear()
+            for requester_property_id in request.POST.getlist('property'):
+                requester_obj.user.property.add(requester_property_id)
+            requester_obj.user.save()
+
+            requester_obj.temporary_user= True if data['temporary_user'] == '0' else False
+            requester_obj.additional_comment=data['additional_comment']
+            requester_obj.modified_by_id=request.user.id
+
+            if requester_obj.temporary_user:
+                requester_obj.deactivation_date = request.POST.get('expiry_date')
+            else:
+                requester_obj.deactivation_date = None
+
+            requester_obj.save()
+            requester_obj.resource_sub_type.clear()
+            for requester_sub_resource_id in request.POST.getlist('resource'):
+                requester_obj.resource_sub_type.add(requester_sub_resource_id)
+    requester_form = RequesterForm(
+        initial={
+            'temporary_user': 'true' if requester_obj.temporary_user else 'false',
+            'additional_comment': requester_obj.additional_comment,
+            'first_name': requester_obj.user.first_name,
+            'last_name': requester_obj.user.last_name,
+            'selected_department': requester_obj.user.department_id,
+            'job_title': requester_obj.user.job_title,
+            'email': requester_obj.user.email,
+        }
+    )
+    context = {
+        'success': True,
+        'requester_form': requester_form,
+        'deactivation_date': requester_obj.deactivation_date,
+        'deepartment_list': Department.objects.filter(state=1, created_by_id=request.user.id),
+        'resource_list': Resource.objects.filter(state=1, created_by_id=request.user.id),
+        'property_list': Property.objects.filter(state=1, created_by_id=request.user.id),
+        'selected_resource_sub_type': list(requester_obj.resource_sub_type.all().values_list('id', flat=True)),
+        'selected_property': list(requester_obj.user.property.all().values_list('id', flat=True))
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login')
+def requesterDelete(request, *args, **kwargs):
+    delete_id = kwargs.get('id')
+    Requester.objects.filter(id=delete_id).update(state=-1)
+    return redirect("requester")
