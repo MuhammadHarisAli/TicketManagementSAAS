@@ -24,4 +24,9 @@ urlpatterns = [
     path('requester/create/', views.requesterCreate, name='requester_create'),
     path('requester/update/<int:id>/', views.requesterupdate, name='requester_update'),
     path('requester/delete/(?P<id>\d+)/', views.requesterDelete, name='requester_delete'),
+
+    path('hirearchy/', views.hirearchy, name='hirearchy'),
+    path('hirearchy/create/', views.hirearchyCreate, name='hirearchy_create'),
+    path('hirearchy/update/<int:id>/', views.hirearchyupdate, name='hirearchy_update'),
+    path('hirearchy/delete/(?P<id>\d+)/', views.hirearchyDelete, name='hirearchy_delete'),
 ]

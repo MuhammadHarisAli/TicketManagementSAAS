@@ -7,8 +7,10 @@ from django.http import Http404, HttpResponse
 from django.template import loader
 
 from accounts.models import Profile
-from general.forms import PropertyForm, DepartmentForm, ResourceForm, RequesterForm
-from general.models import Property, Department, Resource, ResourceSubType, Requester
+from general.forms import PropertyForm, DepartmentForm, ResourceForm,\
+    RequesterForm, AdminRequesterApprovalHirearchyForm
+from general.models import Property, Department, Resource, ResourceSubType,\
+    Requester, AdminRequesterApprovalHirearchy
 
 
 class PropertyView(TemplateView):
@@ -411,3 +413,90 @@ def requesterDelete(request, *args, **kwargs):
     delete_id = kwargs.get('id')
     Requester.objects.filter(id=delete_id).update(state=-1)
     return redirect("requester")
+
+
+@login_required(login_url='login')
+def hirearchy(request, *args, **kwargs):
+    template = loader.get_template('requesterhirearchy/hirearchylist.html')
+    context = {
+        'success': True,
+        'department_hirearchy_list': AdminRequesterApprovalHirearchy.objects.filter(state=1).order_by('department_key_id'),
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login')
+def hirearchyCreate(request, *args, **kwargs):
+    template = loader.get_template('requesterhirearchy/createhirearchy.html')
+    data = {}
+    hirearchy_form = AdminRequesterApprovalHirearchyForm(
+        initial={
+            'department_hirearchy_position': '',
+            'department': '',
+            'user': ''
+        }
+    )
+
+    if request.method == 'POST':
+        data['department_hirearchy_position'] = request.POST.get('approval_level')
+        data['department'] = request.POST.get('department')
+        data['user'] = request.POST.get('user')
+        hirearchy_form = AdminRequesterApprovalHirearchyForm(data)
+        if hirearchy_form.is_valid():
+            AdminRequesterApprovalHirearchy.objects.create(
+                department_hirearchy_position=data['department_hirearchy_position'],
+                department_key_id=data['department'],
+                user_id=data['user'],
+                created_by_id=request.user.id,
+                modified_by_id=request.user.id
+            )
+            return redirect("hirearchy")
+    context = {
+        'success': True,
+        'department_list': Department.objects.filter(state=1, created_by_id=request.user.id),
+        'user_list': Profile.objects.filter(is_active=True),
+        'resource_form': hirearchy_form,
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login')
+def hirearchyupdate(request, *args, **kwargs):
+    template = loader.get_template('requesterhirearchy/createhirearchy.html')
+    update_id = kwargs.get('id')
+    obj = AdminRequesterApprovalHirearchy.objects.filter(id=update_id, created_by_id=request.user.id)[0]
+    data = {}
+    hirearchy_form = AdminRequesterApprovalHirearchyForm(
+        initial={
+            'department_hirearchy_position': obj.department_hirearchy_position,
+            'department': obj.department_key_id,
+            'user': obj.user_id
+        }
+    )
+    if request.method == 'POST':
+        data['department_hirearchy_position'] = request.POST.get('approval_level')
+        data['department'] = request.POST.get('department')
+        data['user'] = request.POST.get('user')
+        hirearchy_form = AdminRequesterApprovalHirearchyForm(data)
+        if hirearchy_form.is_valid():
+
+            obj.department_hirearchy_position=data['department_hirearchy_position']
+            obj.department_key_id=data['department']
+            obj.user_id=data['user']
+            obj.save()
+
+            return redirect("hirearchy")
+    context = {
+        'success': True,
+        'hirearchy_form': hirearchy_form,
+        'department_list': Department.objects.filter(state=1, created_by_id=request.user.id),
+        'user_list': Profile.objects.filter(is_active=True),
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login')
+def hirearchyDelete(request, *args, **kwargs):
+    delete_id = kwargs.get('id')
+    AdminRequesterApprovalHirearchy.objects.filter(id=delete_id,created_by_id=request.user.id).update(state=-1)
+    return redirect("hirearchy")

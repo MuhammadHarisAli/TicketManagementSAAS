@@ -96,3 +96,22 @@ class Requester(Base):
         null=True,
         blank=True,
     )
+
+
+class AdminRequesterApprovalHirearchy(Base):
+
+    department_key = models.ForeignKey(
+        Department,
+        on_delete=models.CASCADE,
+        related_name="%(app_label)s_%(class)s_created_by",
+    )
+    user = models.ForeignKey(
+        'accounts.profile',
+        on_delete=models.CASCADE,
+        related_name="%(app_label)s_%(class)s_created_by",
+    )
+    department_hirearchy_position = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )

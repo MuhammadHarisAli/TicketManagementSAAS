@@ -60,3 +60,18 @@ class RequesterForm(forms.Form):
         max_length=255,
         required=False
     )
+
+
+class AdminRequesterApprovalHirearchyForm(forms.Form):
+    department_hirearchy_position = forms.IntegerField(
+        label='Department Hirearchy Position',
+        required=True
+    )
+    department = forms.IntegerField(
+        label='Department',
+        required=True
+    )
+    user = forms.IntegerField(
+        label='User',
+        required=True
+    )
