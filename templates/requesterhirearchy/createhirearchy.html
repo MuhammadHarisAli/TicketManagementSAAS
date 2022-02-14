@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}DepartmentHirearchy{% endblock %}
+
+{% load tags %}
+
+{% block content %}
+    <!--    if super admin load super admin content-->
+    <!-- else -->
+
+    {% include 'topbar.html' %}
+    <div class="row">
+        <span class="col-4">
+        {% include 'sidebar.html' %}
+        </span>
+        <span class="col-8">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-3 form-group">
+                        <div class="form-floating">
+                            Approval Level
+                            <input type="text" class="form-control" id="approval_level" name="approval_level" placeholder="" value="{{hirearchy_form.department_hirearchy_position.value}}" required>
+                        </div>
+                    </div>
+                    <div class="form-group col-3">
+                        Department
+                        <select name="department" class="custom-select mr-sm-2">
+                            {% for department in department_list %}
+                                <option value="{{ department.id }}" {% if hirearchy_form.department.value|to_str == department.id|to_str %} selected {% endif %}>
+                                    {{department.name}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-3">
+                        User
+                        <select name="user" class="custom-select mr-sm-2">
+                            {% for user in user_list %}
+                                <option value="{{ user.id }}" {% if hirearchy_form.user.value|to_str == user.id|to_str %} selected {% endif %}>
+                                    {{user.username}} | {{user.job_title}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <button style="color:white; margin-top:2%;" type="submit" class="btn btn-primary ">Submit</button>
+            </form>
+        </span>
+    </div>
+{% endblock %}
