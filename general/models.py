@@ -99,7 +99,6 @@ class Requester(Base):
 
 
 class AdminRequesterApprovalHirearchy(Base):
-
     department_key = models.ForeignKey(
         Department,
         on_delete=models.CASCADE,
@@ -111,6 +110,29 @@ class AdminRequesterApprovalHirearchy(Base):
         related_name="%(app_label)s_%(class)s_created_by",
     )
     department_hirearchy_position = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+
+
+class RequesterApprovalState(Base):
+    requester_key = models.ForeignKey(
+        Requester,
+        on_delete=models.CASCADE,
+        related_name="%(app_label)s_%(class)s_created_by",
+    )
+    approval_hirearchy = models.ForeignKey(
+        AdminRequesterApprovalHirearchy,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    request_approved = models.BooleanField(
+        verbose_name=_('Request Approved'),
+        default=False
+    )
+    hirearchy_position = models.CharField(
         max_length=100,
         null=True,
         blank=True

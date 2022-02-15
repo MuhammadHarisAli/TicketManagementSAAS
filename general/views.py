@@ -1,16 +1,18 @@
 import datetime
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import make_password
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.views.generic import TemplateView
 from django.http import Http404, HttpResponse
 from django.template import loader
 
 from accounts.models import Profile
+from general.common import sendmail
 from general.forms import PropertyForm, DepartmentForm, ResourceForm,\
     RequesterForm, AdminRequesterApprovalHirearchyForm
 from general.models import Property, Department, Resource, ResourceSubType,\
-    Requester, AdminRequesterApprovalHirearchy
+    Requester, AdminRequesterApprovalHirearchy, RequesterApprovalState
 
 
 class PropertyView(TemplateView):
@@ -297,6 +299,7 @@ def requesterCreate(request, *args, **kwargs):
         data['first_name'] = request.POST.get('first_name')
         data['last_name'] = request.POST.get('last_name')
         data['email'] = request.POST.get('email')
+        data['password'] = make_password(request.POST.get('password'))
         data['job_title'] = request.POST.get('job_title')
         data['temporary_user'] = request.POST.get('temporary_user')
         data['additional_comment'] = request.POST.get('additional_comment')
@@ -309,6 +312,7 @@ def requesterCreate(request, *args, **kwargs):
                 first_name=data['first_name'],
                 last_name=data['last_name'],
                 username=data['first_name'] + str(datetime.datetime.now()),
+                password=data['password'],
                 department_id=request.POST.get('department'),
                 job_title=data['job_title'],
                 user_type=4
@@ -328,15 +332,27 @@ def requesterCreate(request, *args, **kwargs):
                 requester_obj.save()
             for requester_sub_resource_id in request.POST.getlist('resource'):
                 requester_obj.resource_sub_type.add(requester_sub_resource_id)
+            for approval_hirearchy in AdminRequesterApprovalHirearchy.objects.filter(department_key_id=request_user.department_id, state=1).order_by('department_hirearchy_position'):
+
+                requester_approval_state = RequesterApprovalState.objects.create(
+                    requester_key_id=requester_obj.id,
+                    approval_hirearchy_id=approval_hirearchy.id,
+                    hirearchy_position=approval_hirearchy.department_hirearchy_position,
+                    created_by_id=request.user.id,
+                    modified_by_id=request.user.id,
+                )
+                if requester_approval_state:
+                    sendmail(request, requester_obj.id)
 
             return redirect("requester")
 
     context = {
         'success': True,
         'property_form': requester_form,
+        'not_password_exist': True,
         'deepartment_list': Department.objects.filter(state=1, created_by_id=request.user.id),
         'resource_list': Resource.objects.filter(state=1, created_by_id=request.user.id),
-        'property_list': Property.objects.filter(state=1, created_by_id=request.user.id)
+        'property_list': Property.objects.filter(state=1, created_by_id=request.user.id),
     }
     return HttpResponse(template.render(context, request))
 
@@ -355,13 +371,14 @@ def requesterupdate(request, *args, **kwargs):
         data['job_title'] = request.POST.get('job_title')
         data['temporary_user'] = request.POST.get('temporary_user')
         data['additional_comment'] = request.POST.get('additional_comment')
+        data['password'] = make_password(request.POST.get('password'))
         requester_form = RequesterForm(data)
 
         if requester_form.is_valid():
-
             requester_obj.user.email=data['email']
             requester_obj.user.first_name=data['first_name']
             requester_obj.user.last_name=data['last_name']
+            requester_obj.user.password = data['password']
             requester_obj.user.username=data['first_name'] + str(datetime.datetime.now())
             requester_obj.user.department_id=request.POST.get('department')
             requester_obj.user.job_title=data['job_title']
@@ -384,6 +401,45 @@ def requesterupdate(request, *args, **kwargs):
             requester_obj.resource_sub_type.clear()
             for requester_sub_resource_id in request.POST.getlist('resource'):
                 requester_obj.resource_sub_type.add(requester_sub_resource_id)
+
+            if str(request.POST.get('request_approved')) == '1':
+                approval_obj = RequesterApprovalState.objects.filter(
+                    requester_key_id=requester_obj.id,
+                    approval_hirearchy__department_key_id=requester_obj.user.department_id,
+                    state=1,
+                    request_approved=False,
+                    approval_hirearchy__user_id=request.user.id
+                ).order_by('hirearchy_position')[0]
+                approval_obj.request_approved = True
+                approval_obj.save()
+                approval_obj = RequesterApprovalState.objects.filter(
+                    requester_key_id=requester_obj.id,
+                    approval_hirearchy__department_key_id=requester_obj.user.department_id,
+                    state=1,
+                    request_approved=False,
+                ).order_by('hirearchy_position')[0]
+                sendmail(request, approval_obj.requester_key_id)
+
+
+    approved_list = RequesterApprovalState.objects.filter(
+        requester_key_id=requester_obj.id,
+        approval_hirearchy__department_key_id=requester_obj.user.department_id,
+        state=1,
+        request_approved=True
+    ).order_by('hirearchy_position')
+
+    approval_obj = RequesterApprovalState.objects.filter(
+        requester_key_id=requester_obj.id,
+        approval_hirearchy__department_key_id=requester_obj.user.department_id,
+        state=1,
+        request_approved=False,
+        approval_hirearchy__user_id=request.user.id
+    ).order_by('hirearchy_position')
+    try:
+        approval_obj = approval_obj[0]
+    except:
+        approval_obj = None
+
     requester_form = RequesterForm(
         initial={
             'temporary_user': 'true' if requester_obj.temporary_user else 'false',
@@ -397,13 +453,17 @@ def requesterupdate(request, *args, **kwargs):
     )
     context = {
         'success': True,
+        'not_password_exist': False if requester_obj.user.password else True,
         'requester_form': requester_form,
         'deactivation_date': requester_obj.deactivation_date,
         'deepartment_list': Department.objects.filter(state=1, created_by_id=request.user.id),
         'resource_list': Resource.objects.filter(state=1, created_by_id=request.user.id),
         'property_list': Property.objects.filter(state=1, created_by_id=request.user.id),
         'selected_resource_sub_type': list(requester_obj.resource_sub_type.all().values_list('id', flat=True)),
-        'selected_property': list(requester_obj.user.property.all().values_list('id', flat=True))
+        'selected_property': list(requester_obj.user.property.all().values_list('id', flat=True)),
+        'approved_list': approved_list,
+        'approval': 'true' if approval_obj and approval_obj.request_approved else 'false',
+        'approval_obj': approval_obj
     }
     return HttpResponse(template.render(context, request))
 

@@ -1,5 +1,6 @@
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 
 from django.http import Http404, HttpResponse, JsonResponse
@@ -34,7 +35,7 @@ def createuser(request):
         data['telephone_number'] = request.POST.get('phone-number')
         data['email'] = request.POST.get('email')
         data['address'] = request.POST.get('address')
-        data['password'] = request.POST.get('password')
+        data['password'] = make_password(request.POST.get('password'))
         data['image'] = request.POST.get('customFile')
         profile_form = ProfileForm(data)
         if profile_form.is_valid():

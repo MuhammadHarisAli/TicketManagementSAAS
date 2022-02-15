@@ -1,7 +1,11 @@
 from django.urls import path
 
-from tickets.views import index
+from . import views
 
 urlpatterns = [
-    path('', index, name='index'),
+    path('', views.index, name='index'),
+    path('tickets/', views.tickets, name='tickets'),
+    path('tickets/create/', views.ticketsCreate, name='tickets_create'),
+    path('tickets/update/<int:id>/', views.ticketsUpdate, name='tickets_update'),
+    path('tickets/delete/(?P<id>\d+)/', views.ticketsDelete, name='tickets_delete'),
 ]

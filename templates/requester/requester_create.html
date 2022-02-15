@@ -49,6 +49,13 @@
                             {% endfor %}
                         </select>
                     </div>
+                    {% if not_password_exist %}
+                    <div class="col-3 form-group">
+                        <div class="form-floating">
+                            <input type="tel" class="form-control" placeholder="Password" name="password" id="password" {% if not_password_exist %} required {% endif %}>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="row">
                     <div class="col-3 form-group">
@@ -66,14 +73,17 @@
                         </div>
                     </div>
                 </div>
-                {% for property in property_list %}
-                    <h5 style="margin-top:2%;">Property</h5>
-                    <div class="row">
+
+                <h5 style="margin-top:2%;">Property</h5>
+
+                <div class="row">
+                    {% for property in property_list %}
                         <div class="col-3 form-group property">
                             <input name="property" type="checkbox" value="{{property.id}}" {% if property.id in selected_property %} checked {% endif %}>&nbsp; {{property.location}}
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
+
                 <h3>Resources</h3>
                 {% for resource in resource_list %}
                     <h5 style="margin-top:2%;">{{resource.resource_name}}</h5>
@@ -90,6 +100,44 @@
                     <textarea name="additional_comment" class="form-control" id="exampleFormControlTextarea1" rows="3">{{requester_form.additional_comment.value}}
                     </textarea>
                 </div>
+
+                {% for data in  approved_list %}
+                    <div class="row">
+                        <div class="col-3 form-group">
+                            <label><h4>Username:</h4>  {{data.approval_hirearchy.user.username}} </label>
+                        </div>
+                        <div class="col-3 form-group">
+                            <label><h4>Job Title:</h4> {{data.approval_hirearchy.user.job_title}} </label>
+                        </div>
+                        <div class="col-3 form-group">
+                            <label><h4>Request Approved </h4> </label>
+                            <div class="radio">
+                              <label><input class="temporary_user_yes" type="radio" checked disabled>&nbsp;Yes</label>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                {% if approval_obj %}
+                    <div class="row">
+                        <div class="col-3 form-group">
+                            <label><h4>Username:</h4>  {{approval_obj.approval_hirearchy.user.username}} </label>
+                        </div>
+                        <div class="col-3 form-group">
+                            <label><h4>Job Title:</h4> {{approval_obj.approval_hirearchy.user.job_title}} </label>
+                        </div>
+                        <div class="col-3 form-group">
+                            <label><h4>Request Approved </h4> </label>
+                            <div class="radio">
+                              <label><input class="temporary_user_yes" type="radio" id="request_approved_yes" name="request_approved" value="1" {% if approval == 'true' %} checked {% endif %}>&nbsp;Yes</label>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+
+
+
                 <div style="margin-top:5%;" class="col-4">
                     <button class="btn btn-primary w-100 py-3" type="submit">Add</button>
                 </div>

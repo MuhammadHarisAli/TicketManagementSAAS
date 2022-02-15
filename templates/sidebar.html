@@ -21,7 +21,7 @@
                     <a href="#ticketSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Ticket</a>
                     <ul class="collapse list-unstyled" id="ticketSubmenu">
                         <li>
-                            <a href="#">All Tickets</a>
+                            <a href="{% url 'tickets' %}">All Tickets</a>
                         </li>
                         <li>
                             <a href="#">Open Tickets</a>
@@ -39,7 +39,7 @@
                             <a href="#">Cancelled Tickets</a>
                         </li>
                         <li>
-                            <a href="{% url 'requester' %}">User Access Request</a>
+                            <a href="{% url 'requester' %}">User Access Request Form</a>
                         </li>
                     </ul>
                 </li>
