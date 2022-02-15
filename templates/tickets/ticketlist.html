@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Ticket{% endblock %}
+
+{% block content %}
+    <!--    if super admin load super admin content-->
+    <!-- else -->
+
+    {% include 'topbar.html' %}
+    <div class="row">
+        <span class="col-3">
+        {% include 'sidebar.html' %}
+        </span>
+        <span class="col-8">
+            <a class="btn btn-primary" style="margin-bottom:3%;" href="{% url 'tickets_create' %}" role="button">+ Add Ticket</a>
+            <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">Id</th>
+                  <th scope="col">created_by</th>
+                  <th scope="col">assigned to</th>
+                  <th scope="col">created</th>
+                  <th scope="col">Department</th>
+                  <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                {% for ticket in  ticket_list %}
+                    <tbody>
+                        <tr>
+                          <th>{{ ticket.id }}</th>
+                          <td >{{ ticket.created_by.username }}</td>
+                          <td >{{ ticket.agent.username }}</td>
+                          <td >{{ ticket.created }}</td>
+                          <td >{{ ticket.created_by.department.name }}</td>
+                            <td>
+                                <a href="{% url 'tickets_update' ticket.id %}">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                                &nbsp
+                                <a href="{% url 'tickets_delete' ticket.id %}">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                {% endfor %}
+            </table>
+
+
+        </span>
+    </div>
+{% endblock %}
+
+
+{% block js_content %}
+{% endblock %}

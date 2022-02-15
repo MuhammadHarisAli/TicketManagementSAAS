@@ -1,0 +1,85 @@
+{% load static %}
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+	<title>My help predesk</title>
+	<style>
+		* {padding:0; margin:0; border:0;}
+		body {background:#f7f7f7; font-stretch:normal; line-height:100%; text-rendering:optimizeLegibility !important; -webkit-font-smoothing:antialiased !important; -webkit-text-size-adjust:none;}
+		img {display:block;}
+
+		@media screen and (max-width:640px) {
+			.contain {border-spacing:5px!important;}
+			.reduce {border-spacing:25px!important;}
+			.flexi {width:100%!important;}
+			img {max-width:100% !important; height:auto !important;}
+			.textreduce {font-size:14px !important; line-height:20px !important;}
+		}
+		@media screen and (max-width:400px) {
+			.contain {border-spacing:0px!important;}
+			.reduce {border-spacing:20px!important;}
+		}
+	</style>
+</head>
+<body>
+<table align="center" border="0" cellpadding="0" cellspacing="50" width="100%" style="background:#f7f7f7;" bgcolor="#f7f7f7" class="contain">
+	<tr>
+		<td align="center" width="100%">
+			<table width="600" border="0" cellpadding="0" cellspacing="0" class="flexi reduce">
+				<tr>
+					<td align="left">
+						<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+							<tr>
+								<td align="left">
+									<table width="100%" border="0" cellpadding="0" cellspacing="30" style="background:#1e1e1e;" bgcolor="#1e1e1e" class="reduce">
+										<tr>
+											<td align="left">
+                                                <font color="#f7a81b" face="Helvetica, Arial, Lucida Grande, sans-serif">
+                                                </font>
+                                            </td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td align="left">
+									<table width="100%" border="0" cellpadding="0" cellspacing="30" style="background:white" bgcolor="white" class="reduce">
+										<tr>
+											<td align="left">
+                                                <font size="2" color="#1e1e1e" face="Open Sans, Helvetica, Arial, Lucida Grande, sans-serif" style="font-size:15px; line-height:21px;" class="textreduce">
+                                                    Hi, {{first_name}}
+                                                    Welcome to My help desk.
+                                                <br><br>
+                                                    Please Approve this requester form by clicking this link.
+													{{active_link}}
+                                                    <br>
+                                                    <br>
+                                                    <br>
+                                                    <br>
+                                                    If this request was not found, please ignore this email and contact our online support team:
+                                                <br><br>
+                                                    Regards,
+                                                <br><br>
+                                                		My Help Desk
+                                                <br><br>
+                                                </font>
+                                            </td>
+										</tr>
+										<tr>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td height="30"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</body>
+</html>

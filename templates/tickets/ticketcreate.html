@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Ticket Creation{% endblock %}
+
+{% load tags %}
+
+{% block content %}
+    <!--    if super admin load super admin content-->
+    <!-- else -->
+
+    {% include 'topbar.html' %}
+    <div class="row">
+        <span class="col-4">
+        {% include 'sidebar.html' %}
+        </span>
+        <span class="col-8">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-3 form-group">
+                        <div class="form-floating">
+                            Subject
+                            <input type="text" class="form-control" id="subject" name="subject" placeholder="" value="{{ticket_form.subject.value}}" required>
+                        </div>
+                    </div>
+                    <div class="form-group col-3">
+                        Source Types
+                        <select name="source_types" class="custom-select mr-sm-2">
+                            {% for source in source_types %}
+                                <option value="{{ source.id }}" {% if ticket_form.source_types.value|to_str == source.id|to_str %} selected {% endif %}>
+                                    {{source.name}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-3">
+                        Status Types
+                        <select name="status_types" class="custom-select mr-sm-2">
+                            {% for data in status_types %}
+                                <option value="{{ data.id }}" {% if ticket_form.status_types.value|to_str == data.id|to_str %} selected {% endif %}>
+                                    {{data.name}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-3">
+                        Urgency Types
+                        <select name="urgency_types" class="custom-select mr-sm-2">
+                            {% for data in urgency_types %}
+                                <option value="{{ data.id }}" {% if ticket_form.urgency_types.value|to_str == data.id|to_str %} selected {% endif %}>
+                                    {{data.name}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-3">
+                        Priority Types
+                        <select name="priority_types" class="custom-select mr-sm-2">
+                            {% for data in priority_types %}
+                                <option value="{{ data.id }}" {% if ticket_form.priority_types.value|to_str == data.id|to_str %} selected {% endif %}>
+                                    {{data.name}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-3 form-group">
+                        <div class="form-floating">
+                            Description
+                            <input type="text" class="form-control" id="description" name="description" placeholder="" value="{{ticket_form.description.value}}" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                   <div class="form-group col-3">
+                        Agent
+                        <select name="agent" class="custom-select mr-sm-2">
+                            {% for user in user_list %}
+                                <option value="{{ user.id }}" {% if agent_assigned|to_str == user.id|to_str %} selected {% endif %}>
+                                    {{user.username}} | {{user.job_title}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <button style="color:white; margin-top:2%;" type="submit" class="btn btn-primary ">Submit</button>
+            </form>
+        </span>
+    </div>
+{% endblock %}
