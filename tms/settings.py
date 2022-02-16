@@ -160,8 +160,8 @@ AUTH_USER_MODEL = 'accounts.Profile'
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = 'thomasandy0055@gmail.com'
+EMAIL_HOST_PASSWORD = 'JUSTADS-PK-007'
 EMAIL_PORT = 587
 
 

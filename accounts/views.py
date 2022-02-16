@@ -64,3 +64,57 @@ def adminlist(request):
         'admin_list': Profile.objects.filter(user_type=2, is_active=True)
     }
     return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login')
+def staff_list(request):
+    template = loader.get_template('staff/staff_list.html')
+    context = {
+        'success': True,
+        'staff_list': Profile.objects.filter(user_type=3, is_active=True, admin=request.user)
+    }
+    return HttpResponse(template.render(context, request))
+
+
+@login_required(login_url='login')
+def create_staff(request):
+    template = loader.get_template('staff/create_staff.html')
+    data = {}
+    context = {}
+    profile_form = ProfileForm(
+        initial={
+            'name': '',
+            'telephone_number': '',
+            'email': '',
+            'address': '',
+            'image': '',
+            'password': '',
+        }
+    )
+
+    if request.method == 'POST':
+        data['name'] = request.POST.get('name')
+        data['telephone_number'] = request.POST.get('phone-number')
+        data['email'] = request.POST.get('email')
+        data['address'] = request.POST.get('address')
+        data['password'] = make_password(request.POST.get('password'))
+        data['image'] = request.POST.get('customFile')
+        profile_form = ProfileForm(data)
+        if profile_form.is_valid():
+            Profile.objects.create(
+                email=data['email'],
+                username=data['name'],
+                mobile_number=data['telephone_number'],
+                password=data['password'],
+                img=data['image'],
+                address=data['address'],
+                user_type=3,
+                admin=request.user
+            )
+        template = loader.get_template('staff/staff_list.html')
+        context = {
+            'success': True,
+            'profile_form': profile_form,
+            'staff_list': Profile.objects.filter(user_type=3, is_active=True, admin=request.user)
+        }
+    return HttpResponse(template.render(context, request))
