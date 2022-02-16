@@ -13,6 +13,68 @@
         </span>
         <span class="col-8">
             <a class="btn btn-primary" style="margin-bottom:3%;" href="{% url 'tickets_create' %}" role="button">+ Add Ticket</a>
+            <form method="GET">
+                <div class="row">
+                    <div class="form-group col-3">
+                        Source Types
+                        <select name="source" class="custom-select mr-sm-2">
+                            {% for data in source_types %}
+                                <option value="{{ data.id }}">
+                                    {{data.name}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-3">
+                        Status Types
+                        <select name="status" class="custom-select mr-sm-2">
+                            {% for data in status_types %}
+                                <option value="{{ data.id }}">
+                                    {{data.name}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-3">
+                        Urgency Types
+                        <select name="urgency" class="custom-select mr-sm-2">
+                            {% for data in urgency_types %}
+                                <option value="{{ data.id }}">
+                                    {{data.name}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="form-group col-3">
+                        Priority Types
+                        <select name="priority" class="custom-select mr-sm-2">
+                            {% for data in priority_types %}
+                                <option value="{{ data.id }}">
+                                    {{data.name}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-3">
+                        Ticket States
+                        <select name="ticket_state" class="custom-select mr-sm-2">
+                            {% for data in ticket_state %}
+                                <option value="{{ data.id }}">
+                                    {{data.name}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group col-3">
+                    <button style="color:white; margin-top:4%;" type="submit" class="btn btn-primary ">Search</button>
+                </div>
+            </form>
+            <br>
             <table class="table">
                 <thead>
                 <tr>

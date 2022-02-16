@@ -1,11 +1,91 @@
 {% extends 'base.html' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Ticket Creation{% endblock %}
+
+{% load tags %}
 
 {% block content %}
     <!--    if super admin load super admin content-->
     <!-- else -->
-    {% include 'topbar.html' %}
-    {% include 'sidebar.html' %}
 
+    {% include 'topbar.html' %}
+    <div class="row">
+        <span class="col-4">
+        {% include 'sidebar.html' %}
+        </span>
+        <span class="col-8">
+            <div class="row">
+                <div class="col-3" style="background: #7386D5; color: #fff; padding: 2%; margin-right: 2px;">
+                    <div class="" >
+                        <h5>Tickets on Hold</h5> <br>
+                        <p style="color: black; text-align: center;">{{tickets_on_hold}}</p>
+                    </div>
+                </div>
+                <div class="col-3" style="background: #7386D5; color: #fff; padding: 2%; margin-right: 2px;">
+                    <div class="" >
+                        <h5>Unassigned Tickets</h5> <br>
+                        <p style="color: black; text-align: center;">{{unassigned_tickets}}</p>
+                    </div>
+                </div>
+                <div class="col-3" style="background: #7386D5; color: #fff; padding: 2%; margin-right: 2px;">
+                    <div class="" >
+                        <h5>Tickets I'm Watching</h5> <br>
+                        <p style="color: black; text-align: center;">{{tickets_im_watching}}</p>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-3" style="background: #7386D5; color: #fff; padding: 2%; margin-right: 2px;">
+                    <div class="" >
+                        <h5>OverDue Tickets</h5> <br>
+                        <p style="color: black; text-align: center;">{{overdue_tickets}}</p>
+                    </div>
+                </div>
+                <div class="col-3" style="background: #7386D5; color: #fff; padding: 2%; margin-right: 2px;">
+                    <div class="" >
+                        <h5>Open Tickets</h5> <br>
+                        <p style="color: black; text-align: center;">{{open_tickets}}</p>
+                    </div>
+                </div>
+                <div class="col-3" style="background: #7386D5; color: #fff; padding: 2%; margin-right: 2px;">
+                    <div class="" >
+                        <h5>Tickets due Today</h5> <br>
+                        <p style="color: black; text-align: center;">{{tickets_due_today}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <div class="row">
+                <div class="col-3" style="background: #7386D5; color: #fff; padding: 2%; margin-right: 2px;">
+                    <div class="" >
+                        <h5>In Progress Tickets</h5> <br>
+                        <p style="color: black; text-align: center;">{{in_progress_tickets}}</p>
+                    </div>
+                </div>
+                <div class="col-3" style="background: #7386D5; color: #fff; padding: 2%; margin-right: 2px;">
+                    <div class="" >
+                        <h5>Accelated Tickets</h5> <br>
+                        <p style="color: black; text-align: center;">{{accelated_tickets}}</p>
+                    </div>
+                </div>
+                <div class="col-3" style="background: #7386D5; color: #fff; padding: 2%; margin-right: 2px;">
+                    <div class="" >
+                        <h5>Cloased Tickets</h5> <br>
+                        <p style="color: black; text-align: center;">{{cloased_tickets}}</p>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-3" style="background: #7386D5; color: #fff; padding: 2%; margin-right: 2px;">
+                    <div class="" >
+                        <h5>Cancelled Tickets</h5> <br>
+                        <p style="color: black; text-align: center;">{{cancelled_tickets}}</p>
+                    </div>
+                </div>
+            </div>
+        </span>
+    </div>
 {% endblock %}

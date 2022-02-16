@@ -6,7 +6,7 @@
         <ul class="components">
             <p></p>
                 <li>
-                    <a href="#">Dashboard</a>
+                    <a href="{% url 'index' %}">Dashboard</a>
                 </li>
             {% if request.user.user_type == 1 %}
                 <li>
@@ -24,19 +24,19 @@
                             <a href="{% url 'tickets' %}">All Tickets</a>
                         </li>
                         <li>
-                            <a href="#">Open Tickets</a>
+                            <a href="{% url 'tickets' %}?sidebar_filter_by=5">Open Tickets</a>
                         </li>
                         <li>
-                            <a href="#">In Progress Tickets</a>
+                            <a href="{% url 'tickets' %}?sidebar_filter_by=7">In Progress Tickets</a>
                         </li>
                         <li>
-                            <a href="#">Accelated Tickets</a>
+                            <a href="{% url 'tickets' %}?sidebar_filter_by=8">Accelated Tickets</a>
                         </li>
                         <li>
-                            <a href="#">Closed Tickets</a>
+                            <a href="{% url 'tickets' %}?sidebar_filter_by=9">Closed Tickets</a>
                         </li>
                         <li>
-                            <a href="#">Cancelled Tickets</a>
+                            <a href="{% url 'tickets' %}?sidebar_filter_by=10">Cancelled Tickets</a>
                         </li>
                         <li>
                             <a href="{% url 'requester' %}">User Access Request Form</a>
@@ -88,7 +88,7 @@
                             <a href="#" >Staff</a>
                         </li>
                         <li>
-                            <a href="#" >Requester</a>
+                            <a href="{% url 'tickets' %}" >Requester</a>
                         </li>
                     </ul>
                 </li>

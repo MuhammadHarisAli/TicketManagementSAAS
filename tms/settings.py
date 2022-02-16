@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'tickets',
-    'general'
+    'general',
+    'django_crontab'
 ]
 
 MIDDLEWARE = [
@@ -155,3 +156,15 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = "login"
 
 AUTH_USER_MODEL = 'accounts.Profile'
+
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_PORT = 587
+
+
+CRONJOBS = [
+    ('*/120 * * * *', 'general.cron.my_scheduled_job')
+]

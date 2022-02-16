@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from general.models import Base
-from general.constants import SOURCE_TYPES, STATUS_TYPES, URGENCY_TYPES, PRIORITY_TYPES
+from general.constants import SOURCE_TYPES, STATUS_TYPES, URGENCY_TYPES, PRIORITY_TYPES, TICKET_STATE
 # Create your models here.
 
 
@@ -39,6 +39,17 @@ class Tickets(Base):
     )
     description = models.CharField(
         max_length=1000,
+        null=True,
+        blank=True
+    )
+    ticket_state = models.SmallIntegerField(
+        verbose_name=_('Publish state'),
+        choices=TICKET_STATE,
+        default=1,
+    )
+    expiry_date = models.DateTimeField(
+        verbose_name=_('Creation date'),
+        editable=True,
         null=True,
         blank=True
     )

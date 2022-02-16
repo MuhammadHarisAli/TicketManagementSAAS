@@ -42,3 +42,16 @@ PRIORITY_TYPES = (
     (3, _('High')),
     (3, _('Urgent'))
 )
+
+TICKET_STATE = (
+    (1, _('Tickets on Hold')),
+    (2, _('Unassigned Tickets')),
+    (3, _('Ticket IM Wathing')),
+    (4, _('Overdue Tickets')),
+    (5, _('Open Tickets')),
+    (6, _('Ticket Due Today')),
+    (7, _('In Progress Tickets')),
+    (8, _('Accelated Tickets')),
+    (9, _('Closed Tickets')),
+    (10, _('Cancelled Tickets')),
+)
