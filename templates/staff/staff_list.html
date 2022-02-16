@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Staff list{% endblock %}
+
+{% block content %}
+    <!--    if super admin load super admin content-->
+    <!-- else -->
+
+    {% include 'topbar.html' %}
+    <div class="row">
+        <span class="col-3">
+        {% include 'sidebar.html' %}
+        </span>
+        <span class="col-8">
+            <a class="btn btn-primary" href="{% url 'create_staff' %}" role="button">Add Staff</a>
+            <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col">id</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Mobile</th>
+                  <th scope="col">Address</th>
+                </tr>
+                </thead>
+                {% for data in  staff_list%}
+                    <tbody>
+                        <tr>
+                          <th>{{ data.id }}</th>
+                          <td >{{ data.username }}</td>
+                          <td>{{ data.email }}</td>
+                          <td>{{ data.mobile_number }}</td>
+                          <td>{{ data.address }}</td>
+                        </tr>
+                    </tbody>
+                {% endfor %}
+            </table>
+
+
+        </span>
+    </div>
+{% endblock %}
