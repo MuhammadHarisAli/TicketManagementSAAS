@@ -21,7 +21,7 @@
                   <th scope="col">Email</th>
                   <th scope="col">Mobile</th>
                   <th scope="col">Address</th>
-                  <th scope="col">Actions</th>
+                  <th scope="col">profile</th>
                 </tr>
                 </thead>
                 {% for data in  admin_list%}
@@ -32,6 +32,7 @@
                           <td>{{ data.email }}</td>
                           <td>{{ data.mobile_number }}</td>
                           <td>{{ data.address }}</td>
+                          <td><img src='{{ MEDIA_URL }}{{ data.img }}' height="50px;"></td>
                         </tr>
                     </tbody>
                 {% endfor %}

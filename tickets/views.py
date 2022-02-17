@@ -52,18 +52,21 @@ TICKET_STATE = [
 @login_required(login_url='login')
 def index(request, *args, **kwargs):
     template = loader.get_template('tickets/index.html')
-    context = {
-        'tickets_on_hold': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=1).count(),
-        'unassigned_tickets': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=2).count(),
-        'tickets_im_watching': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=3).count(),
-        'overdue_tickets': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=4).count(),
-        'open_tickets': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=5).count(),
-        'tickets_due_today': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=6).count(),
-        'in_progress_tickets': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=7).count(),
-        'accelated_tickets': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=8).count(),
-        'cloased_tickets': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=9).count(),
-        'cancelled_tickets': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=10).count(),
-    }
+    context = {'display_dashboard': False}
+    if request.user.user_type != 1:
+        context = {
+            'display_dashboard': True,
+            'tickets_on_hold': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=1).count(),
+            'unassigned_tickets': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=2).count(),
+            'tickets_im_watching': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=3).count(),
+            'overdue_tickets': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=4).count(),
+            'open_tickets': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=5).count(),
+            'tickets_due_today': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=6).count(),
+            'in_progress_tickets': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=7).count(),
+            'accelated_tickets': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=8).count(),
+            'cloased_tickets': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=9).count(),
+            'cancelled_tickets': Tickets.objects.filter(state=1, created_by_id=request.user.id, ticket_state=10).count(),
+        }
     return HttpResponse(template.render(context, request))
 
 

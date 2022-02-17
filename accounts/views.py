@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 
+from django.conf import settings
 from django.http import Http404, HttpResponse, JsonResponse
 from django.template import loader
 
@@ -44,14 +45,16 @@ def createuser(request):
                 username=data['name'],
                 mobile_number=data['telephone_number'],
                 password=data['password'],
-                img=data['image'],
+                img=request.FILES.get('customFile'),
                 address=data['address'],
+                admin=request.user,
                 user_type=2
             )
     context = {
         'success': True,
         'profile_form': profile_form,
-        'admin_list': Profile.objects.filter(user_type=2, is_active=True)
+        'admin_list': Profile.objects.filter(user_type=2, is_active=True),
+        'MEDIA_ROOT':settings.MEDIA_ROOT
     }
     return HttpResponse(template.render(context, request))
 
