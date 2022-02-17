@@ -97,7 +97,7 @@ def department(request, *args, **kwargs):
     template = loader.get_template('general/department.html')
     context = {
         'success': True,
-        'department_list': Department.objects.filter(state=1),
+        'department_list': Department.objects.filter(state=1, created_by_id=request.user.id),
     }
     return HttpResponse(template.render(context, request))
 
@@ -128,7 +128,7 @@ def departmentCreate(request, *args, **kwargs):
     context = {
         'success': True,
         'property_form': department_form,
-        'supervisor_list': Profile.objects.filter(is_active=True)
+        'supervisor_list': Profile.objects.filter(is_active=True, admin_id=request.user.id)
     }
     return HttpResponse(template.render(context, request))
 

@@ -81,20 +81,39 @@ def tickets(request, *args, **kwargs):
     urgency_type = request.GET.get('urgency')
     priority_type = request.GET.get('priority')
     if ticket_state or source_type or status_type or urgency_type or priority_type:
-        ticket_list = Tickets.objects.filter(
-            state=1,
-            created_by_id=request.user.id,
-            ticket_state=request.GET.get('ticket_state'),
-            source_type=request.GET.get('source'),
-            status_type=request.GET.get('status'),
-            urgency_type=request.GET.get('urgency'),
-            priority_type=request.GET.get('priority'),
-        )
+        if request.user.user_type == 2:
+            admin_staff_id_list = list(Profile.objects.filter(is_active=True, admin_id=request.user.id).values_list('id', flat=True))
+            ticket_list = Tickets.objects.filter(
+                state=1,
+                created_by_id__in=admin_staff_id_list + [request.user.id],
+                ticket_state=request.GET.get('ticket_state'),
+                source_type=request.GET.get('source'),
+                status_type=request.GET.get('status'),
+                urgency_type=request.GET.get('urgency'),
+                priority_type=request.GET.get('priority'),
+            )
+        else:
+            ticket_list = Tickets.objects.filter(
+                state=1,
+                created_by_id=request.user.id,
+                ticket_state=request.GET.get('ticket_state'),
+                source_type=request.GET.get('source'),
+                status_type=request.GET.get('status'),
+                urgency_type=request.GET.get('urgency'),
+                priority_type=request.GET.get('priority'),
+            )
     else:
-        ticket_list = Tickets.objects.filter(
-            state=1,
-            created_by_id=request.user.id,
-        )
+        if request.user.user_type == 2:
+            admin_staff_id_list = list(Profile.objects.filter(is_active=True, admin_id=request.user.id).values_list('id', flat=True))
+            ticket_list = Tickets.objects.filter(
+                state=1,
+                created_by_id__in=admin_staff_id_list + [request.user.id],
+            )
+        else:
+            ticket_list = Tickets.objects.filter(
+                state=1,
+                created_by_id=request.user.id,
+            )
     if sidebar_filter_by:
         ticket_list = ticket_list.filter(ticket_state=sidebar_filter_by,state=1)
     context = {
@@ -171,7 +190,7 @@ def ticketsCreate(request, *args, **kwargs):
 def ticketsUpdate(request, *args, **kwargs):
     template = loader.get_template('tickets/ticketcreate.html')
     update_id = kwargs.get('id')
-    obj = Tickets.objects.filter(id=update_id, created_by_id=request.user.id)[0]
+    obj = Tickets.objects.filter(id=update_id)[0]
     data = {}
 
     ticket_form = TicketForm(

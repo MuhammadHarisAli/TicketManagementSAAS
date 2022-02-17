@@ -74,7 +74,7 @@
                 </div>
                 <div class="row">
                    <div class="form-group col-3">
-                        Agent
+                        Staff
                         <select name="agent" class="custom-select mr-sm-2">
                             {% for user in user_list %}
                                 <option value="{{ user.id }}" {% if agent_assigned|to_str == user.id|to_str %} selected {% endif %}>

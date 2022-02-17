@@ -2,12 +2,14 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404, redirect, reverse
 
 from django.conf import settings
 from django.http import Http404, HttpResponse, JsonResponse
 from django.template import loader
 
 from accounts.models import Profile
+from general.models import Department
 from .forms import LoginForm, ProfileForm
 
 
@@ -50,6 +52,7 @@ def createuser(request):
                 admin=request.user,
                 user_type=2
             )
+            return redirect("adminlist")
     context = {
         'success': True,
         'profile_form': profile_form,
@@ -83,7 +86,6 @@ def staff_list(request):
 def create_staff(request):
     template = loader.get_template('staff/create_staff.html')
     data = {}
-    context = {}
     profile_form = ProfileForm(
         initial={
             'name': '',
@@ -112,12 +114,14 @@ def create_staff(request):
                 img=data['image'],
                 address=data['address'],
                 user_type=3,
+                job_title=request.POST.get('job_title'),
+                department_id=request.POST.get('department'),
                 admin=request.user
             )
-        template = loader.get_template('staff/staff_list.html')
-        context = {
-            'success': True,
-            'profile_form': profile_form,
-            'staff_list': Profile.objects.filter(user_type=3, is_active=True, admin=request.user)
-        }
+        return redirect("staff_list")
+
+    context = {
+        'department_list': Department.objects.filter(state=1, created_by_id=request.user.id),
+        'profile_form':profile_form
+    }
     return HttpResponse(template.render(context, request))

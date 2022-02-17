@@ -16,7 +16,7 @@
                     <a href="#" >Report</a>
                 </li>
             {% endif %}
-            {% if request.user.user_type == 2 %}
+            {% if request.user.user_type == 2 or request.user.user_type == 3 %}
                 <li>
                     <a href="#ticketSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Ticket</a>
                     <ul class="collapse list-unstyled" id="ticketSubmenu">
