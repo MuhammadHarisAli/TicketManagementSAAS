@@ -295,6 +295,7 @@ def requesterCreate(request, *args, **kwargs):
             'additional_comment':''
         }
     )
+    username_email_flag = False
     if request.method == 'POST':
         data['first_name'] = request.POST.get('first_name')
         data['last_name'] = request.POST.get('last_name')
@@ -306,12 +307,22 @@ def requesterCreate(request, *args, **kwargs):
         requester_form = RequesterForm(data)
 
         if requester_form.is_valid():
-
+            if Profile.objects.filter(username=data['first_name'] + data['last_name']).exists() or Profile.objects.filter(email=data['email']).exists():
+                context = {
+                    'success': True,
+                    'property_form': requester_form,
+                    'not_password_exist': True,
+                    'deepartment_list': Department.objects.filter(state=1, created_by_id=request.user.id),
+                    'resource_list': Resource.objects.filter(state=1, created_by_id=request.user.id),
+                    'property_list': Property.objects.filter(state=1, created_by_id=request.user.id),
+                    'username_email_flag': True
+                }
+                return HttpResponse(template.render(context, request))
             request_user = Profile.objects.create(
                 email=data['email'],
                 first_name=data['first_name'],
                 last_name=data['last_name'],
-                username=data['first_name'] + str(datetime.datetime.now()),
+                username=data['first_name'] + data['last_name'],
                 password=data['password'],
                 department_id=request.POST.get('department'),
                 job_title=data['job_title'],
@@ -328,7 +339,7 @@ def requesterCreate(request, *args, **kwargs):
                 user_id=request_user.id,
             )
             if requester_obj.temporary_user:
-                requester_obj.deactivation_date = request.POST.get('expiry_date')
+                requester_obj.deactivation_date = request.POST.get('expiry_date') if request.POST.get('expiry_date') else '2023-03-22'
                 requester_obj.save()
             for requester_sub_resource_id in request.POST.getlist('resource'):
                 requester_obj.resource_sub_type.add(requester_sub_resource_id)

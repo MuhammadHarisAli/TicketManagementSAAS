@@ -50,20 +50,20 @@
                         </select>
                     </div>
                     {% if not_password_exist %}
-                    <div class="col-3 form-group">
-                        <div class="form-floating">
-                            <input type="tel" class="form-control" placeholder="Password" name="password" id="password" {% if not_password_exist %} required {% endif %}>
+                        <div class="col-3 form-group">
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" placeholder="Password" name="password" id="password" {% if not_password_exist %} required {% endif %}>
+                            </div>
                         </div>
-                    </div>
                     {% endif %}
                 </div>
                 <div class="row">
                     <div class="col-3 form-group">
                         <label>Temporary User </label>
                         <div class="radio">
-                          <label><input class="temporary_user_yes" type="radio" id="temporary_user_yes" name="temporary_user" value="0" {% if requester_form.temporary_user.value == 'true' %} checked {% endif %}>&nbsp;Yes</label>
-                            &nbsp;
                           <label><input class="temporary_user_no" type="radio" id="temporary_user_no" name="temporary_user" value="1" {% if requester_form.temporary_user.value == 'false' %} checked {% endif %}>&nbsp;No</label>
+                            &nbsp
+                          <label><input class="temporary_user_yes" type="radio" id="temporary_user_yes" name="temporary_user" value="0" {% if requester_form.temporary_user.value == 'true' %} checked {% endif %}>&nbsp;Yes</label>
                         </div>
                     </div>
                     <div class="col-3 form-group class_expiry_date">
@@ -136,7 +136,13 @@
                 {% endif %}
 
 
-
+                {% if username_email_flag %}
+                    <div class="row">
+                        <div class="col-4" style="color:red;">
+                            Username or email id already exist
+                        </div>
+                    </div>
+                {% endif %}
 
                 <div style="margin-top:5%;" class="col-4">
                     <button class="btn btn-primary w-100 py-3" type="submit">Add</button>

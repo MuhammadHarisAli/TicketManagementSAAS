@@ -48,6 +48,13 @@
                         </div>
                     </div>
                 </div>
+                {% if username_email_flag %}
+                    <div class="row">
+                        <div class="col-4" style="color:red;">
+                            Username or email id already exist
+                        </div>
+                    </div>
+                {% endif %}
                 <div style="margin-top:5%;" class="col-4">
                     <button class="btn btn-primary w-100 py-3" type="submit">Add</button>
                 </div>

@@ -32,7 +32,7 @@ def createuser(request):
             'password': '',
         }
     )
-
+    username_email_flag = False
     if request.method == 'POST':
         data['name'] = request.POST.get('name')
         data['telephone_number'] = request.POST.get('phone-number')
@@ -41,7 +41,17 @@ def createuser(request):
         data['password'] = make_password(request.POST.get('password'))
         data['image'] = request.POST.get('customFile')
         profile_form = ProfileForm(data)
+
         if profile_form.is_valid():
+            if Profile.objects.filter(username=data['name']).exists() or Profile.objects.filter(email=data['email']).exists():
+                context = {
+                    'success': True,
+                    'profile_form': profile_form,
+                    'admin_list': Profile.objects.filter(user_type=2, is_active=True),
+                    'MEDIA_ROOT': settings.MEDIA_ROOT,
+                    'username_email_flag':True
+                }
+                return HttpResponse(template.render(context, request))
             Profile.objects.create(
                 email=data['email'],
                 username=data['name'],
@@ -57,7 +67,8 @@ def createuser(request):
         'success': True,
         'profile_form': profile_form,
         'admin_list': Profile.objects.filter(user_type=2, is_active=True),
-        'MEDIA_ROOT':settings.MEDIA_ROOT
+        'MEDIA_ROOT':settings.MEDIA_ROOT,
+        'username_email_flag':username_email_flag
     }
     return HttpResponse(template.render(context, request))
 
@@ -86,6 +97,7 @@ def staff_list(request):
 def create_staff(request):
     template = loader.get_template('staff/create_staff.html')
     data = {}
+    username_email_flag = False
     profile_form = ProfileForm(
         initial={
             'name': '',
@@ -106,6 +118,13 @@ def create_staff(request):
         data['image'] = request.POST.get('customFile')
         profile_form = ProfileForm(data)
         if profile_form.is_valid():
+            if Profile.objects.filter(username=data['name']).exists() or Profile.objects.filter(email=data['email']).exists():
+                context = {
+                    'department_list': Department.objects.filter(state=1, created_by_id=request.user.id),
+                    'profile_form': profile_form,
+                    'username_email_flag': True
+                }
+                return HttpResponse(template.render(context, request))
             Profile.objects.create(
                 email=data['email'],
                 username=data['name'],
