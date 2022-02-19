@@ -128,7 +128,7 @@ def departmentCreate(request, *args, **kwargs):
     context = {
         'success': True,
         'property_form': department_form,
-        'supervisor_list': Profile.objects.filter(is_active=True, admin_id=request.user.id)
+        'supervisor_list': Profile.objects.filter(is_active=True)
     }
     return HttpResponse(template.render(context, request))
 
@@ -274,9 +274,15 @@ def subresourceDelete(request, *args, **kwargs):
 @login_required(login_url='login')
 def requester(request, *args, **kwargs):
     template = loader.get_template('requester/requesterlist.html')
+    admin_id = [request.user.id]
+    if request.user.user_type == 2:
+        admin_id_list = list(Profile.objects.filter(admin_id=request.user.id).values_list('id', flat=True))
+        admin_id = admin_id_list + admin_id
+    else:
+        admin_id +=  [request.user.admin_id]
     context = {
         'success': True,
-        'requester_list': Requester.objects.filter(state=1, created_by_id=request.user.id),
+        'requester_list': Requester.objects.filter(state=1, created_by_id__in=admin_id),
     }
     return HttpResponse(template.render(context, request))
 
@@ -296,6 +302,9 @@ def requesterCreate(request, *args, **kwargs):
         }
     )
     username_email_flag = False
+    admin_id = request.user.id
+    if request.user.user_type != 2:
+        admin_id = request.user.admin_id
     if request.method == 'POST':
         data['first_name'] = request.POST.get('first_name')
         data['last_name'] = request.POST.get('last_name')
@@ -361,9 +370,10 @@ def requesterCreate(request, *args, **kwargs):
         'success': True,
         'property_form': requester_form,
         'not_password_exist': True,
-        'deepartment_list': Department.objects.filter(state=1, created_by_id=request.user.id),
-        'resource_list': Resource.objects.filter(state=1, created_by_id=request.user.id),
-        'property_list': Property.objects.filter(state=1, created_by_id=request.user.id),
+        'deepartment_list': Department.objects.filter(state=1, created_by_id=admin_id),
+        'resource_list': Resource.objects.filter(state=1, created_by_id=admin_id),
+        'property_list': Property.objects.filter(state=1, created_by_id=admin_id),
+        'username_email_flag':username_email_flag
     }
     return HttpResponse(template.render(context, request))
 
@@ -382,15 +392,11 @@ def requesterupdate(request, *args, **kwargs):
         data['job_title'] = request.POST.get('job_title')
         data['temporary_user'] = request.POST.get('temporary_user')
         data['additional_comment'] = request.POST.get('additional_comment')
-        data['password'] = make_password(request.POST.get('password'))
         requester_form = RequesterForm(data)
 
         if requester_form.is_valid():
-            requester_obj.user.email=data['email']
             requester_obj.user.first_name=data['first_name']
             requester_obj.user.last_name=data['last_name']
-            requester_obj.user.password = data['password']
-            requester_obj.user.username=data['first_name'] + str(datetime.datetime.now())
             requester_obj.user.department_id=request.POST.get('department')
             requester_obj.user.job_title=data['job_title']
 
@@ -423,33 +429,48 @@ def requesterupdate(request, *args, **kwargs):
                 ).order_by('hirearchy_position')[0]
                 approval_obj.request_approved = True
                 approval_obj.save()
-                approval_obj = RequesterApprovalState.objects.filter(
-                    requester_key_id=requester_obj.id,
-                    approval_hirearchy__department_key_id=requester_obj.user.department_id,
-                    state=1,
-                    request_approved=False,
-                ).order_by('hirearchy_position')[0]
+                try:
+                    approval_obj = RequesterApprovalState.objects.filter(
+                        requester_key_id=requester_obj.id,
+                        approval_hirearchy__department_key_id=requester_obj.user.department_id,
+                        state=1,
+                        request_approved=False,
+                    ).order_by('hirearchy_position')[0]
+                except:
+                    pass
+                    # create ticket
                 sendmail(request, approval_obj.requester_key_id)
 
+    try:
+        approval_obj = RequesterApprovalState.objects.filter(
+            requester_key_id=requester_obj.id,
+            approval_hirearchy__department_key_id=requester_obj.user.department_id,
+            state=1,
+            request_approved=False,
+            approval_hirearchy__user_id=request.user.id
+        ).order_by('hirearchy_position')[0]
+    except:
+        approval_obj = None
+    parent_hirearchy_to_approve_exist = False
 
     approved_list = RequesterApprovalState.objects.filter(
         requester_key_id=requester_obj.id,
         approval_hirearchy__department_key_id=requester_obj.user.department_id,
         state=1,
-        request_approved=True
+        request_approved=True,
     ).order_by('hirearchy_position')
+    if approval_obj:
+        approved_list = approved_list.filter(hirearchy_position__lt = approval_obj.hirearchy_position)
 
-    approval_obj = RequesterApprovalState.objects.filter(
-        requester_key_id=requester_obj.id,
-        approval_hirearchy__department_key_id=requester_obj.user.department_id,
-        state=1,
-        request_approved=False,
-        approval_hirearchy__user_id=request.user.id
-    ).order_by('hirearchy_position')
-    try:
-        approval_obj = approval_obj[0]
-    except:
-        approval_obj = None
+        if RequesterApprovalState.objects.filter(
+            requester_key_id=requester_obj.id,
+            approval_hirearchy__department_key_id=requester_obj.user.department_id,
+            state=1,
+            request_approved=False,
+            hirearchy_position__lt=approval_obj.hirearchy_position
+        ).order_by('hirearchy_position').exists():
+            parent_hirearchy_to_approve_exist = True
+
 
     requester_form = RequesterForm(
         initial={
@@ -462,19 +483,25 @@ def requesterupdate(request, *args, **kwargs):
             'email': requester_obj.user.email,
         }
     )
+    admin_id = request.user.id
+    if request.user.user_type != 2:
+        admin_id = request.user.admin_id
+
     context = {
         'success': True,
         'not_password_exist': False if requester_obj.user.password else True,
         'requester_form': requester_form,
         'deactivation_date': requester_obj.deactivation_date,
-        'deepartment_list': Department.objects.filter(state=1, created_by_id=request.user.id),
-        'resource_list': Resource.objects.filter(state=1, created_by_id=request.user.id),
-        'property_list': Property.objects.filter(state=1, created_by_id=request.user.id),
+        'deepartment_list': Department.objects.filter(state=1, created_by_id=admin_id),
+        'resource_list': Resource.objects.filter(state=1, created_by_id=admin_id),
+        'property_list': Property.objects.filter(state=1, created_by_id=admin_id),
         'selected_resource_sub_type': list(requester_obj.resource_sub_type.all().values_list('id', flat=True)),
         'selected_property': list(requester_obj.user.property.all().values_list('id', flat=True)),
         'approved_list': approved_list,
         'approval': 'true' if approval_obj and approval_obj.request_approved else 'false',
-        'approval_obj': approval_obj
+        'approval_obj': approval_obj,
+        'selected_department': requester_obj.user.department_id,
+        'parent_hirearchy_to_approve_exist':parent_hirearchy_to_approve_exist
     }
     return HttpResponse(template.render(context, request))
 

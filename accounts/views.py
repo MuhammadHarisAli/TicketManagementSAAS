@@ -60,6 +60,7 @@ def createuser(request):
                 img=request.FILES.get('customFile'),
                 address=data['address'],
                 admin=request.user,
+                job_title=request.POST.get('job_title'),
                 user_type=2
             )
             return redirect("adminlist")
