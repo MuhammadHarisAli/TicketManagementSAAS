@@ -43,7 +43,7 @@
                     <div class="form-group col-3">
                         <select name="department" class="custom-select mr-sm-2">
                             {% for department in deepartment_list %}
-                                <option value="{{ department.id }}" {% if requester_form.selected_department.value|to_str == department.id|to_str %} selected {% endif %}>
+                                <option value="{{ department.id }}" {% if selected_department|to_str == department.id|to_str %} selected {% endif %}>
                                     {{department.name}}
                                 </option>
                             {% endfor %}
@@ -129,7 +129,7 @@
                         <div class="col-3 form-group">
                             <label><h4>Request Approved </h4> </label>
                             <div class="radio">
-                              <label><input class="temporary_user_yes" type="radio" id="request_approved_yes" name="request_approved" value="1" {% if approval == 'true' %} checked {% endif %}>&nbsp;Yes</label>
+                              <label><input class="temporary_user_yes" type="radio" id="request_approved_yes" name="request_approved" value="1" {% if approval == 'true' %} checked {% endif %} {% if parent_hirearchy_to_approve_exist %} disabled {% endif %} >&nbsp;Yes</label>
                             </div>
                         </div>
                     </div>
